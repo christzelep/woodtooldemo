@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3498db">
+
+<!-- iOS support -->
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Woodworking Assistant (FREE DEMO)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: #f5f7fa; color: #333; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.08); padding: 25px; position: relative; }
+        h1 { color: #2c3e50; text-align: center; padding-bottom: 15px; }
+        .watermark { position: absolute; top: 20px; right: 20px; opacity: 0.1; font-size: 24px; font-weight: bold; }
+        .calculator { background: #f9f9f9; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #2c3e50; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+        button.calculate { background: #3498db; color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 5px; cursor: pointer; width: 100%; transition: background 0.3s; margin-top: 10px; }
+        button.calculate:hover { background: #2980b9; }
+        .result { background: #e8f4fc; border-left: 4px solid #3498db; padding: 15px; margin-top: 20px; border-radius: 0 5px 5px 0; }
+        .upgrade-banner { background: #fff8e1; border: 1px solid #ffd54f; padding: 15px; text-align: center; border-radius: 8px; margin-top: 20px; }
+        .upgrade-button { background: #4CAF50; color: white; border: none; padding: 12px 25px; font-size: 16px; border-radius: 5px; cursor: pointer; margin-top: 10px; display: inline-block; text-decoration: none; }
+        .features { margin-top: 30px; }
+        .features ul { columns: 2; }
+        .footer { text-align: center; margin-top: 30px; color: #7f8c8d; font-size: 14px; }
+<style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { background: #f5f7fa; color: #333; line-height: 1.6; padding: 20px; }
+    
+    ... [όλοι οι υπάρχοντες κανόνες] ...
+    
+    .features ul { columns: 2; }
+    
+    .footer { 
+        text-align: center; 
+        margin-top: 30px; 
+        color: #7f8c8d; 
+        font-size: 14px; 
+    }
+
+    /* ========== ΠΡΟΣΘΗΚΗ ΝΕΟΥ CSS ΕΔΩ ========== */
+    .install-banner {
+        text-align: center;
+        margin: 25px 0;
+    }
+
+    .install-button {
+        background: #9b59b6;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        font-size: 16px;
+        border-radius: 50px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: transform 0.3s;
+    }
+
+    .install-button:hover {
+        transform: scale(1.05);
+        background: #8e44ad;
+    }
+
+    .install-button img {
+        filter: invert(1);
+    }
+    /* ========== ΤΕΛΟΣ ΝΕΟΥ CSS ========== */
+</style>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="watermark">DEMO VERSION</div>
+        <h1>Woodworking Assistant</h1>
+        <h3 style="text-align: center; color: #3498db;">FREE DEMO</h3>
+        
+        <div class="calculator">
+            <div class="input-group">
+                <label for="boardLength">Board Length (cm): <span style="color:#e74c3c;">(max 100cm in demo)</span></label>
+                <input type="number" id="boardLength" placeholder="e.g., 100" max="100">
+            </div>
+            <div class="input-group">
+                <label for="pieceLengths">Piece Lengths Needed (comma separated, max 3 pieces):</label>
+                <input type="text" id="pieceLengths" placeholder="e.g., 30, 40, 20">
+            </div>
+            <button class="calculate" onclick="optimizeCuts()">Calculate Optimal Cuts</button>
+            <div id="cuttingResult" class="result"></div>
+        </div>
+
+        <div class="upgrade-banner">
+            <h3>Unlock Full Version!</h3>
+            <p>Get these premium features:</p>
+            <ul class="features">
+                <li>✔️ Unlimited board length</li>
+                <li>✔️ Unlimited pieces calculation</li>
+                <li>✔️ Angle Calculator</li>
+                <li>✔️ Material Cost Estimator</li>
+                <li>✔️ No watermarks</li>
+                <li>✔️ Priority updates</li>
+            </ul>
+            <a href="https://gadgeteer70.gumroad.com/l/wood-tool" class="upgrade-button">Get Full Version ($9.99)</a>
+            <!-- Κουμπί Εγκατάστασης -->
+<div class="install-banner">
+  <button id="installButton" class="install-button">
+    <img src="icons/download-icon.png" alt="Install" width="20"> 
+    Install App
+  </button>
+</div>
+        <div class="footer">
+            <p>Created exclusively for you - Limited FREE Demo</p>
+        </div>
+    </div>
+
+    <script>
+        function optimizeCuts() {
+            const boardLength = parseFloat(document.getElementById("boardLength").value);
+            const piecesInput = document.getElementById("pieceLengths").value;
+            const pieceLengths = piecesInput.split(',').map(piece => parseFloat(piece.trim()));
+            
+            // Demo limitations
+            if (boardLength > 100) {
+                document.getElementById("cuttingResult").innerHTML = "⚠️ Demo limited to 100cm boards. Upgrade for unlimited!";
+                return;
+            }
+            
+            if (pieceLengths.length > 3) {
+                document.getElementById("cuttingResult").innerHTML = "⚠️ Demo limited to 3 pieces. Upgrade for unlimited!";
+                return;
+            }
+            
+            if (!boardLength || pieceLengths.some(isNaN)) {
+                document.getElementById("cuttingResult").innerHTML = "⚠️ Please enter valid numbers";
+                return;
+            }
+
+            // Simple optimization
+            const sortedPieces = [...pieceLengths].sort((a, b) => b - a);
+            let remaining = boardLength;
+            let cuts = [];
+            
+            for (const piece of sortedPieces) {
+                if (remaining >= piece) {
+                    cuts.push(piece);
+                    remaining -= piece;
+                }
+            }
+            
+            const wastePercentage = ((remaining / boardLength) * 100).toFixed(1);
+            
+            document.getElementById("cuttingResult").innerHTML = `
+                <h3>Optimization Results:</h3>
+                <p><strong>Pieces Cut:</strong> ${cuts.join("cm, ")}cm</p>
+                <p><strong>Waste:</strong> ${remaining.toFixed(2)}cm (${wastePercentage}%)</p>
+                <p><strong>Efficiency:</strong> ${(100 - wastePercentage)}% material used</p>
+                <p style="color:#e74c3c; font-style: italic;">DEMO LIMITATION: Upgrade for full features!</p>
+            `;
+        }
+    </script>
+<script>
+  // Εγκατάσταση PWA
+  let deferredPrompt;
+  const installButton = document.getElementById('installButton');
+  
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installButton.style.display = 'block';
+  });
+
+  installButton.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        installButton.textContent = '✅ Installed!';
+      }
+      deferredPrompt = null;
+    }
+  });
+  
+  // Καταχώρηση Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js');
+    });
+  }
+</script>
+</body>
+</html>
