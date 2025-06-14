@@ -1,10 +1,14 @@
 {
   "name": "Woodworking Assistant DEMO",
   "short_name": "Woodworking DEMO",
-  "start_url": "/index.html",
+  "description": "A simple free demo assistant for woodworking enthusiasts.",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f5f7fa",
   "theme_color": "#3498db",
+  "orientation": "portrait",
+  "lang": "en",
   "icons": [
     {
       "src": "icons/icon-192.png",
@@ -18,4 +22,3 @@
     }
   ]
 }
-
