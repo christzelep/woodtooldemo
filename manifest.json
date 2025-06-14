@@ -1,23 +1,22 @@
-let deferredPrompt;
-const installBtn = document.getElementById('installBtn');
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault(); // Αποτρέπει το αυτόματο popup
-  deferredPrompt = e; // Αποθηκεύουμε το event για μετέπειτα χρήση
-  installBtn.style.display = 'block'; // Εμφάνιση του κουμπιού
-});
-
-installBtn.addEventListener('click', async () => {
-  if (!deferredPrompt) {
-    return;
-  }
-  deferredPrompt.prompt(); // Εμφάνιση του διαλόγου εγκατάστασης
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') {
-    console.log('User accepted the install prompt');
-  } else {
-    console.log('User dismissed the install prompt');
-  }
-  deferredPrompt = null; // Μηδενίζουμε το event
-  installBtn.style.display = 'none'; // Κρύβουμε το κουμπί μετά
-});
+{
+  "name": "Woodworking Assistant",
+  "short_name": "Woodwork",
+  "description": "FREE DEMO - Optimize your woodworking cuts with ease!",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#3498db",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
