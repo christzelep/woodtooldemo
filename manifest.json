@@ -3,6 +3,7 @@
   "short_name": "Woodwork",
   "description": "FREE DEMO - Optimize your woodworking cuts with ease!",
   "start_url": "./index.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#f5f7fa",
   "theme_color": "#3498db",
