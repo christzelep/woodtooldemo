@@ -2,13 +2,11 @@
 <html lang="el">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Woodworking Assistant (FREE DEMO)</title>
 
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#3498db" />
-
-    <!-- iOS support -->
     <link rel="apple-touch-icon" href="icons/icon-192.png" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
@@ -17,14 +15,12 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, sans-serif;
         }
-
         body {
             background: #f5f7fa;
             color: #333;
             line-height: 1.6;
             padding: 20px;
         }
-
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -34,13 +30,11 @@
             padding: 25px;
             position: relative;
         }
-
         h1 {
             color: #2c3e50;
             text-align: center;
             padding-bottom: 15px;
         }
-
         .watermark {
             position: absolute;
             top: 20px;
@@ -49,25 +43,21 @@
             font-size: 24px;
             font-weight: bold;
         }
-
         .calculator {
             background: #f9f9f9;
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
         }
-
         .input-group {
             margin-bottom: 15px;
         }
-
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: #2c3e50;
         }
-
         input {
             width: 100%;
             padding: 12px;
@@ -75,7 +65,6 @@
             border-radius: 5px;
             font-size: 16px;
         }
-
         button.calculate {
             background: #3498db;
             color: white;
@@ -88,11 +77,9 @@
             transition: background 0.3s;
             margin-top: 10px;
         }
-
         button.calculate:hover {
             background: #2980b9;
         }
-
         .result {
             background: #e8f4fc;
             border-left: 4px solid #3498db;
@@ -100,7 +87,6 @@
             margin-top: 20px;
             border-radius: 0 5px 5px 0;
         }
-
         .upgrade-banner {
             background: #fff8e1;
             border: 1px solid #ffd54f;
@@ -109,7 +95,6 @@
             border-radius: 8px;
             margin-top: 20px;
         }
-
         .upgrade-button {
             background: #4caf50;
             color: white;
@@ -122,34 +107,28 @@
             display: inline-block;
             text-decoration: none;
         }
-
         .features {
             margin-top: 30px;
         }
-
         .features ul {
             columns: 2;
             padding-left: 0;
             list-style: none;
         }
-
         .features li {
             margin-bottom: 10px;
         }
-
         .footer {
             text-align: center;
             margin-top: 30px;
             color: #7f8c8d;
             font-size: 14px;
         }
-
-        /* ========== ΝΕΟ CSS ΓΙΑ INSTALL BANNER ========== */
+        /* Install button */
         .install-banner {
             text-align: center;
             margin: 25px 0;
         }
-
         .install-button {
             background: #9b59b6;
             color: white;
@@ -164,12 +143,10 @@
             transition: transform 0.3s;
             user-select: none;
         }
-
         .install-button:hover {
             transform: scale(1.05);
             background: #8e44ad;
         }
-
         .install-button img {
             filter: invert(1);
             display: block;
@@ -214,7 +191,7 @@
             </ul>
             <a href="https://gadgeteer70.gumroad.com/l/wood-tool" class="upgrade-button" target="_blank" rel="noopener noreferrer">Get Full Version ($9.99)</a>
 
-            <!-- Κουμπί Εγκατάστασης PWA -->
+            <!-- PWA Install Button -->
             <div class="install-banner" style="display:none;">
                 <button id="installButton" class="install-button" type="button">
                     <img src="icons/download-icon.png" alt="Install" width="20" />
@@ -239,7 +216,6 @@
 
             const resultDiv = document.getElementById("cuttingResult");
 
-            // Demo limitations and validation
             if (!boardLength || isNaN(boardLength) || boardLength <= 0) {
                 resultDiv.innerHTML = "⚠️ Please enter a valid board length.";
                 return;
@@ -258,7 +234,6 @@
                 return;
             }
 
-            // Simple optimization: cut pieces if fit in descending order
             const sortedPieces = [...pieceLengths].sort((a, b) => b - a);
             let remaining = boardLength;
             let cuts = [];
@@ -281,7 +256,7 @@
             `;
         }
 
-        // PWA Installation Prompt Handling
+        // PWA installation prompt handling
         let deferredPrompt;
         const installButton = document.getElementById('installButton');
         const installBanner = installButton.parentElement;
@@ -306,17 +281,14 @@
             deferredPrompt = null;
         });
 
-        // Register Service Worker if supported
+        // Register service worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js').then(() => {
-                    console.log('Service Worker registered successfully.');
-                }).catch(err => {
-                    console.warn('Service Worker registration failed:', err);
-                });
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(() => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker registration failed:', err));
             });
         }
     </script>
 </body>
 </html>
-
