@@ -1,0 +1,6 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self' 'unsafe-inline' *.netlify.app; img-src 'self' data:;"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
