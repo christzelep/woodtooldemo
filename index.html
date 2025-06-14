@@ -160,6 +160,7 @@
         #installMessage {
             margin-top: 10px;
             font-weight: bold;
+            text-align: center;
         }
         .message-success {
             color: #27ae60;
@@ -295,14 +296,20 @@
 
         function showInstallButton() {
             installButton.classList.remove('hidden');
-            installMessage.textContent = 'Κάντε κλικ για να εγκαταστήσετε την εφαρμογή';
+            installMessage.textContent = 'Click to install the app';
             installMessage.className = 'message-info';
         }
 
         // Check if app is already installed
         function checkIfAppInstalled() {
             if (window.matchMedia('(display-mode: standalone)').matches) {
-                installMessage.textContent = 'Η εφαρμογή είναι ήδη εγκατεστημένη!';
+                installMessage.textContent = 'App is already installed!';
+                installMessage.className = 'message-success';
+                installButton.classList.add('hidden');
+                return true;
+            }
+            if (window.navigator.standalone) {
+                installMessage.textContent = 'App is already installed!';
                 installMessage.className = 'message-success';
                 installButton.classList.add('hidden');
                 return true;
@@ -311,7 +318,6 @@
         }
 
         window.addEventListener('load', () => {
-            // Check if already installed
             if (checkIfAppInstalled()) return;
             
             // Show install button after 3 seconds if event doesn't fire
@@ -330,32 +336,44 @@
 
         installButton.addEventListener('click', async () => {
             if (!deferredPrompt) {
-                // Fallback for browsers without beforeinstallprompt
-                installMessage.textContent = 'Ακολουθήστε τις οδηγίες του browser σας για εγκατάσταση (Συνήθως στο μενού ⋮)';
+                // Improved fallback instructions
+                installMessage.innerHTML = 'To install the app:<br>' + 
+                    '• Chrome: Click ⋮ > Install App<br>' +
+                    '• Safari: Tap Share > Add to Home Screen<br>' +
+                    '• Firefox: Click ⋮ > Install';
                 installMessage.className = 'message-info';
                 return;
             }
             
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            
-            if (outcome === 'accepted') {
-                installMessage.textContent = 'Εγκατάσταση επιτυχής! Η εφαρμογή θα ανοίξει σύντομα.';
-                installMessage.className = 'message-success';
-                installButton.textContent = '✅ Εγκατεστημένη';
-                installButton.disabled = true;
-            } else {
-                installMessage.textContent = 'Εγκατάσταση ακυρώθηκε. Μπορείτε να προσπαθήσετε ξανά αργότερα.';
+            try {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                if (outcome === 'accepted') {
+                    installMessage.textContent = 'Installation successful! The app will open shortly.';
+                    installMessage.className = 'message-success';
+                    installButton.textContent = '✅ Installed';
+                    installButton.disabled = true;
+                } else {
+                    installMessage.textContent = 'Installation cancelled. You can try again later.';
+                    installMessage.className = 'message-error';
+                }
+            } catch (error) {
+                console.error('Installation failed:', error);
+                installMessage.textContent = 'Installation failed. Please use browser menu.';
                 installMessage.className = 'message-error';
             }
+            
             deferredPrompt = null;
         });
 
         window.addEventListener('appinstalled', () => {
-            installMessage.textContent = 'Εγκατάσταση επιτυχής! Η εφαρμογή θα ανοίξει σύντομα.';
+            installMessage.textContent = 'Installation successful! The app will open shortly.';
             installMessage.className = 'message-success';
-            installButton.textContent = '✅ Εγκατεστημένη';
-            installButton.disabled = true;
+            if (installButton) {
+                installButton.textContent = '✅ Installed';
+                installButton.disabled = true;
+            }
         });
 
         // ===== SERVICE WORKER REGISTRATION =====
@@ -367,12 +385,14 @@
                     })
                     .catch(error => {
                         console.error('Service Worker registration failed:', error);
-                        installMessage.textContent = 'Η λειτουργία offline δεν είναι διαθέσιμη';
-                        installMessage.className = 'message-error';
+                        if (installMessage) {
+                            installMessage.textContent = 'Offline support not available';
+                            installMessage.className = 'message-error';
+                        }
                     });
             });
-        } else {
-            installMessage.textContent = 'Ο browser σας δεν υποστηρίζει εγκατάσταση εφαρμογών';
+        } else if (installMessage) {
+            installMessage.textContent = 'Service Workers not supported in this browser';
             installMessage.className = 'message-error';
         }
     </script>
