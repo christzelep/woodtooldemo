@@ -11,135 +11,76 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     <style>
-        /* ... υπάρχον CSS ... */
-        
-        /* Install button */
-        .install-banner {
-            text-align: center;
-            margin: 25px 0;
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
         }
-        .install-button {
-            background: #9b59b6;
+        body {
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            position: relative;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            padding-bottom: 15px;
+        }
+        .watermark {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            opacity: 0.1;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .calculator {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button.calculate {
+            background: #3498db;
             color: white;
             border: none;
             padding: 12px 25px;
             font-size: 16px;
-            border-radius: 50px;
+            border-radius: 5px;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: transform 0.3s;
-            user-select: none;
-        }
-        .install-button:hover {
-            transform: scale(1.05);
-            background: #8e44ad;
-        }
-        .install-button img {
-            filter: invert(1);
-            display: block;
-        }
-        #installMessage {
+            width: 100%;
+            transition: background 0.3s;
             margin-top: 10px;
-            color: #27ae60;
-            font-weight: bold;
         }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- ... υπάρχον HTML ... -->
-
-        <!-- PWA Install Button -->
-        <div class="install-banner">
-            <button id="installButton" class="install-button" type="button" style="display:none;">
-                <img src="icons/download-icon.png" alt="Install" width="20" />
-                Install App
-            </button>
-            <div id="installMessage"></div>
-        </div>
-
-        <!-- ... υπάρχον HTML ... -->
-    </div>
-
-    <script>
-        function optimizeCuts() {
-            // ... υπάρχον κώδικας ...
+        button.calculate:hover {
+            background: #2980b9;
         }
-
-        // ===== PWA INSTALLATION HANDLING =====
-        let deferredPrompt;
-        const installButton = document.getElementById('installButton');
-        const installMessage = document.getElementById('installMessage');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent Chrome 67 and earlier from automatically showing the prompt
-            e.preventDefault();
-            // Stash the event so it can be triggered later
-            deferredPrompt = e;
-            // Show the install button
-            installButton.style.display = 'inline-flex';
-            
-            // Check if the app is already installed
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                installMessage.textContent = 'App is already installed!';
-                installButton.style.display = 'none';
-            }
-        });
-
-        installButton.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                installMessage.textContent = 'Installation not available in this browser';
-                return;
-            }
-            
-            // Show the install prompt
-            deferredPrompt.prompt();
-            
-            // Wait for the user to respond to the prompt
-            const { outcome } = await deferredPrompt.userChoice;
-            
-            if (outcome === 'accepted') {
-                installMessage.textContent = 'App installed successfully!';
-                installButton.textContent = '✅ Installed';
-                installButton.disabled = true;
-            } else {
-                installMessage.textContent = 'Installation cancelled';
-            }
-            
-            // Clear the deferredPrompt variable
-            deferredPrompt = null;
-        });
-
-        // Event listener for app installed event
-        window.addEventListener('appinstalled', () => {
-            installMessage.textContent = 'App installed successfully!';
-            installButton.textContent = '✅ Installed';
-            installButton.disabled = true;
-        });
-
-        // Check if running in standalone mode (already installed)
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            installMessage.textContent = 'App is already installed!';
-            installButton.style.display = 'none';
-        }
-
-        // ===== SERVICE WORKER REGISTRATION =====
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(registration => {
-                        console.log('Service Worker registered:', registration);
-                    })
-                    .catch(error => {
-                        console.error('Service Worker registration failed:', error);
-                        installMessage.textContent = 'Offline support not available';
-                    });
-            });
-        } else {
-            installMessage.textContent = 'Service Workers not supported in this browser';
-        }
-    </script>
-</body>
-</html>
+        .result {
+            background: #e8f4fc;
+            border-left: 4px solid #3498db;
+            padding
