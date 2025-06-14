@@ -4,11 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Woodworking Assistant (FREE DEMO)</title>
-
-    <link rel="manifest" href="manifest.json" />
+    
+    <!-- PWA Metadata -->
+    <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#3498db" />
-    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="description" content="FREE DEMO - Optimize your woodworking cuts with ease!">
 
     <style>
         * {
@@ -20,6 +22,7 @@
             color: #333;
             line-height: 1.6;
             padding: 20px;
+            margin: 0;
         }
         .container {
             max-width: 800px;
@@ -34,6 +37,7 @@
             color: #2c3e50;
             text-align: center;
             padding-bottom: 15px;
+            margin-top: 0;
         }
         .watermark {
             position: absolute;
@@ -42,6 +46,7 @@
             opacity: 0.1;
             font-size: 24px;
             font-weight: bold;
+            pointer-events: none;
         }
         .calculator {
             background: #f9f9f9;
@@ -139,7 +144,7 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            transition: transform 0.3s;
+            transition: all 0.3s;
             user-select: none;
         }
         .install-button:hover {
@@ -149,11 +154,24 @@
         .install-button img {
             filter: invert(1);
             display: block;
+            width: 20px;
+            height: 20px;
         }
         #installMessage {
             margin-top: 10px;
-            color: #27ae60;
             font-weight: bold;
+        }
+        .message-success {
+            color: #27ae60;
+        }
+        .message-info {
+            color: #3498db;
+        }
+        .message-error {
+            color: #e74c3c;
+        }
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -207,11 +225,11 @@
 
         <!-- PWA Install Button -->
         <div class="install-banner">
-            <button id="installButton" class="install-button" type="button" style="display:none;">
-                <img src="icons/download-icon.png" alt="Install" width="20" />
+            <button id="installButton" class="install-button hidden" type="button">
+                <img src="/icons/download-icon.png" alt="Install" />
                 Install App
             </button>
-            <div id="installMessage"></div>
+            <div id="installMessage" class="message-info"></div>
         </div>
 
         <div class="footer">
@@ -275,20 +293,46 @@
         const installButton = document.getElementById('installButton');
         const installMessage = document.getElementById('installMessage');
 
+        function showInstallButton() {
+            installButton.classList.remove('hidden');
+            installMessage.textContent = 'Κάντε κλικ για να εγκαταστήσετε την εφαρμογή';
+            installMessage.className = 'message-info';
+        }
+
+        // Check if app is already installed
+        function checkIfAppInstalled() {
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                installMessage.textContent = 'Η εφαρμογή είναι ήδη εγκατεστημένη!';
+                installMessage.className = 'message-success';
+                installButton.classList.add('hidden');
+                return true;
+            }
+            return false;
+        }
+
+        window.addEventListener('load', () => {
+            // Check if already installed
+            if (checkIfAppInstalled()) return;
+            
+            // Show install button after 3 seconds if event doesn't fire
+            setTimeout(() => {
+                if (!deferredPrompt) {
+                    showInstallButton();
+                }
+            }, 3000);
+        });
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            installButton.style.display = 'inline-flex';
-            
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                installMessage.textContent = 'App is already installed!';
-                installButton.style.display = 'none';
-            }
+            showInstallButton();
         });
 
         installButton.addEventListener('click', async () => {
             if (!deferredPrompt) {
-                installMessage.textContent = 'Installation not available in this browser';
+                // Fallback for browsers without beforeinstallprompt
+                installMessage.textContent = 'Ακολουθήστε τις οδηγίες του browser σας για εγκατάσταση (Συνήθως στο μενού ⋮)';
+                installMessage.className = 'message-info';
                 return;
             }
             
@@ -296,26 +340,23 @@
             const { outcome } = await deferredPrompt.userChoice;
             
             if (outcome === 'accepted') {
-                installMessage.textContent = 'App installed successfully!';
-                installButton.textContent = '✅ Installed';
+                installMessage.textContent = 'Εγκατάσταση επιτυχής! Η εφαρμογή θα ανοίξει σύντομα.';
+                installMessage.className = 'message-success';
+                installButton.textContent = '✅ Εγκατεστημένη';
                 installButton.disabled = true;
             } else {
-                installMessage.textContent = 'Installation cancelled';
+                installMessage.textContent = 'Εγκατάσταση ακυρώθηκε. Μπορείτε να προσπαθήσετε ξανά αργότερα.';
+                installMessage.className = 'message-error';
             }
-            
             deferredPrompt = null;
         });
 
         window.addEventListener('appinstalled', () => {
-            installMessage.textContent = 'App installed successfully!';
-            installButton.textContent = '✅ Installed';
+            installMessage.textContent = 'Εγκατάσταση επιτυχής! Η εφαρμογή θα ανοίξει σύντομα.';
+            installMessage.className = 'message-success';
+            installButton.textContent = '✅ Εγκατεστημένη';
             installButton.disabled = true;
         });
-
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            installMessage.textContent = 'App is already installed!';
-            installButton.style.display = 'none';
-        }
 
         // ===== SERVICE WORKER REGISTRATION =====
         if ('serviceWorker' in navigator) {
@@ -326,13 +367,13 @@
                     })
                     .catch(error => {
                         console.error('Service Worker registration failed:', error);
-                        if (installMessage) {
-                            installMessage.textContent = 'Offline support disabled';
-                        }
+                        installMessage.textContent = 'Η λειτουργία offline δεν είναι διαθέσιμη';
+                        installMessage.className = 'message-error';
                     });
             });
-        } else if (installMessage) {
-            installMessage.textContent = 'Service Workers not supported in this browser';
+        } else {
+            installMessage.textContent = 'Ο browser σας δεν υποστηρίζει εγκατάσταση εφαρμογών';
+            installMessage.className = 'message-error';
         }
     </script>
 </body>
