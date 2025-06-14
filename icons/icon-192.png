@@ -1,1 +1,13 @@
+<button onclick="downloadIcon192()">Download Icon 192x192</button>
+
+<script>
+function downloadIcon192() {
+  const link = document.createElement('a');
+  link.href = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAA..."; // ολόκληρο base64 εδώ
+  link.download = "icon-192x192.png";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+</script>
 
