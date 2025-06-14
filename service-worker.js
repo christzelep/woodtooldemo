@@ -1,4 +1,4 @@
-const CACHE_NAME = 'woodworking-assistant-cache-v4';
+const CACHE_NAME = 'woodworking-assistant-cache-v6';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -11,7 +11,10 @@ const urlsToCache = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+      .then(cache => {
+        console.log('Caching core assets');
+        return cache.addAll(urlsToCache);
+      })
   );
 });
 
@@ -21,6 +24,7 @@ self.addEventListener('activate', (event) => {
       Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -32,6 +36,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
-      .then(response => response || fetch(event.request))
+      .then(response => {
+        return response || fetch(event.request);
+      })
   );
 });
