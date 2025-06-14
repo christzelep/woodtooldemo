@@ -1,4 +1,4 @@
-const CACHE_NAME = 'woodworking-assistant-cache-v6';
+const CACHE_NAME = 'woodworking-assistant-cache-v7';
 const urlsToCache = [
   '/',
   '/index.html',
